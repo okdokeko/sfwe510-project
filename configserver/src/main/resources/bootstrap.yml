@@ -3,15 +3,12 @@ spring:
     name: config-server
   profiles:
     active:
-    - native, git
+    - git
   cloud:
     config:
       server:
-        # native:
-        #   search-locations: classpath:/config
-        git: # step 4
+        git: 
           uri: https://github.com/okdokeko/config.git
-          searchPaths: licensingservice
     
 server:
   port: 8089

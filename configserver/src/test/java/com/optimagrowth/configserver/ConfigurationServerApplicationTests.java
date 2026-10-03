@@ -1,4 +1,4 @@
-package com.optimagrowth.configserver;
+package com.samazon.configserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
