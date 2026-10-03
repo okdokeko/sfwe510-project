@@ -1,4 +1,4 @@
-package com.samazon.license.service;
+package com.samazon.product.service;
 
 import java.util.UUID;
 
@@ -6,50 +6,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import com.samazon.license.config.ServiceConfig;
-import com.samazon.license.model.License;
-import com.samazon.license.repository.LicenseRepository;
+import com.samazon.product.config.ServiceConfig;
+import com.samazon.product.model.Product;
+import com.samazon.product.repository.ProductRepository;
 
 @Service
-public class LicenseService {
+public class ProductService {
 
 	@Autowired
 	MessageSource messages;
 
 	@Autowired
-	private LicenseRepository licenseRepository;
+	private ProductRepository productRepository;
 
 	@Autowired
 	ServiceConfig config;
 
 
-	public License getLicense(String licenseId, String organizationId){
-		License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
-		if (null == license) {
-			throw new IllegalArgumentException(String.format(messages.getMessage("license.search.error.message", null, null),licenseId, organizationId));	
+	public Product getProduct(String productId, String organizationId){
+		Product product = productRepository.findByOrganizationIdAndProductId(organizationId, productId);
+		if (null == product) {
+			throw new IllegalArgumentException(String.format(messages.getMessage("product.search.error.message", null, null),productId, organizationId));	
 		}
-		return license.withComment(config.getProperty());
+		return product.withComment(config.getProperty());
 	}
 
-	public License createLicense(License license){
-		license.setLicenseId(UUID.randomUUID().toString());
-		licenseRepository.save(license);
+	public Product createProduct(Product product){
+		product.setProductId(UUID.randomUUID().toString());
+		productRepository.save(product);
 
-		return license.withComment(config.getProperty());
+		return product.withComment(config.getProperty());
 	}
 
-	public License updateLicense(License license){
-		licenseRepository.save(license);
+	public Product updateProduct(Product product){
+		productRepository.save(product);
 
-		return license.withComment(config.getProperty());
+		return product.withComment(config.getProperty());
 	}
 
-	public String deleteLicense(String licenseId){
+	public String deleteProduct(String productId){
 		String responseMessage = null;
-		License license = new License();
-		license.setLicenseId(licenseId);
-		licenseRepository.delete(license);
-		responseMessage = String.format(messages.getMessage("license.delete.message", null, null),licenseId);
+		Product product = new Product();
+		product.setProductId(productId);
+		productRepository.delete(product);
+		responseMessage = String.format(messages.getMessage("product.delete.message", null, null),productId);
 		return responseMessage;
 
 	}

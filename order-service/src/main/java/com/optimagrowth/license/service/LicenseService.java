@@ -1,4 +1,4 @@
-package com.samazon.license.service;
+package com.samazon.order.service;
 
 import java.util.UUID;
 
@@ -6,50 +6,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import com.samazon.license.config.ServiceConfig;
-import com.samazon.license.model.License;
-import com.samazon.license.repository.LicenseRepository;
+import com.samazon.order.config.ServiceConfig;
+import com.samazon.order.model.Order;
+import com.samazon.order.repository.OrderRepository;
 
 @Service
-public class LicenseService {
+public class OrderService {
 
 	@Autowired
 	MessageSource messages;
 
 	@Autowired
-	private LicenseRepository licenseRepository;
+	private OrderRepository orderRepository;
 
 	@Autowired
 	ServiceConfig config;
 
 
-	public License getLicense(String licenseId, String organizationId){
-		License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
-		if (null == license) {
-			throw new IllegalArgumentException(String.format(messages.getMessage("license.search.error.message", null, null),licenseId, organizationId));	
+	public Order getOrder(String orderId, String organizationId){
+		Order order = orderRepository.findByOrganizationIdAndOrderId(organizationId, orderId);
+		if (null == order) {
+			throw new IllegalArgumentException(String.format(messages.getMessage("order.search.error.message", null, null),orderId, organizationId));	
 		}
-		return license.withComment(config.getProperty());
+		return order.withComment(config.getProperty());
 	}
 
-	public License createLicense(License license){
-		license.setLicenseId(UUID.randomUUID().toString());
-		licenseRepository.save(license);
+	public Order createOrder(Order order){
+		order.setOrderId(UUID.randomUUID().toString());
+		orderRepository.save(order);
 
-		return license.withComment(config.getProperty());
+		return order.withComment(config.getProperty());
 	}
 
-	public License updateLicense(License license){
-		licenseRepository.save(license);
+	public Order updateOrder(Order order){
+		orderRepository.save(order);
 
-		return license.withComment(config.getProperty());
+		return order.withComment(config.getProperty());
 	}
 
-	public String deleteLicense(String licenseId){
+	public String deleteOrder(String orderId){
 		String responseMessage = null;
-		License license = new License();
-		license.setLicenseId(licenseId);
-		licenseRepository.delete(license);
-		responseMessage = String.format(messages.getMessage("license.delete.message", null, null),licenseId);
+		Order order = new Order();
+		order.setOrderId(orderId);
+		orderRepository.delete(order);
+		responseMessage = String.format(messages.getMessage("order.delete.message", null, null),orderId);
 		return responseMessage;
 
 	}

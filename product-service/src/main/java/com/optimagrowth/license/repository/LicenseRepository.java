@@ -1,14 +1,14 @@
-package com.samazon.license.repository;
+package com.samazon.product.repository;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.samazon.license.model.License;
+import com.samazon.product.model.Product;
 
 @Repository
-public interface LicenseRepository extends CrudRepository<License,String>  {
-    public List<License> findByOrganizationId(String organizationId);
-    public License findByOrganizationIdAndLicenseId(String organizationId,String licenseId);
+public interface ProductRepository extends CrudRepository<Product,String>  {
+    public List<Product> findByOrganizationId(String organizationId);
+    public Product findByOrganizationIdAndProductId(String organizationId,String productId);
 }

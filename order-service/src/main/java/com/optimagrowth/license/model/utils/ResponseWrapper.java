@@ -1,4 +1,4 @@
-package com.samazon.license.model.utils;
+package com.samazon.order.model.utils;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 

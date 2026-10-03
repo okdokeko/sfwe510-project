@@ -1,4 +1,4 @@
-package com.samazon.license;
+package com.samazon.order;
 
 import java.util.Locale;
 
@@ -12,10 +12,10 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @SpringBootApplication
 @RefreshScope
-public class LicenseServiceApplication {
+public class OrderServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LicenseServiceApplication.class, args);
+		SpringApplication.run(OrderServiceApplication.class, args);
 	}
 
 	@Bean

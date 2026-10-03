@@ -1,4 +1,4 @@
-package com.samazon.license.model;
+package com.samazon.order.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,23 +14,23 @@ import lombok.ToString;
 
 @Getter @Setter @ToString
 @Entity
-@Table(name="licenses")
-public class License extends RepresentationModel<License> {
+@Table(name="orders")
+public class Order extends RepresentationModel<Order> {
 
 	@Id
-	@Column(name = "license_id", nullable = false)
-	private String licenseId;
+	@Column(name = "order_id", nullable = false)
+	private String orderId;
 	private String description;
 	@Column(name = "organization_id", nullable = false)
 	private String organizationId;
 	@Column(name = "product_name", nullable = false)
 	private String productName;
-	@Column(name = "license_type", nullable = false)
-	private String licenseType;
+	@Column(name = "order_type", nullable = false)
+	private String orderType;
 	@Column(name="comment")
 	private String comment;
 
-	public License withComment(String comment){
+	public Order withComment(String comment){
 		this.setComment(comment);
 		return this;
 	}

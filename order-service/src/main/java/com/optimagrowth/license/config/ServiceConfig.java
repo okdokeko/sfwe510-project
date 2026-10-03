@@ -1,4 +1,4 @@
-package com.samazon.license.config;
+package com.samazon.order.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

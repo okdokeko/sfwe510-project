@@ -1,4 +1,4 @@
-package com.samazon.license.controller;
+package com.samazon.order.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -14,43 +14,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.samazon.license.model.License;
-import com.samazon.license.service.LicenseService;
+import com.samazon.order.model.Order;
+import com.samazon.order.service.OrderService;
 
 @RestController
-@RequestMapping(value="v1/organization/{organizationId}/license")
-public class LicenseController {
+@RequestMapping(value="v1/organization/{organizationId}/order")
+public class OrderController {
 
 	@Autowired
-	private LicenseService licenseService;
+	private OrderService orderService;
 
-	@RequestMapping(value="/{licenseId}",method = RequestMethod.GET)
-	public ResponseEntity<License> getLicense( @PathVariable("organizationId") String organizationId,
-			@PathVariable("licenseId") String licenseId) {
+	@RequestMapping(value="/{orderId}",method = RequestMethod.GET)
+	public ResponseEntity<Order> getOrder( @PathVariable("organizationId") String organizationId,
+			@PathVariable("orderId") String orderId) {
 		
-		License license = licenseService.getLicense(licenseId, organizationId);
-		license.add( 
-				linkTo(methodOn(LicenseController.class).getLicense(organizationId, license.getLicenseId())).withSelfRel(),
-				linkTo(methodOn(LicenseController.class).createLicense(license)).withRel("createLicense"),
-				linkTo(methodOn(LicenseController.class).updateLicense(license)).withRel("updateLicense"),
-				linkTo(methodOn(LicenseController.class).deleteLicense(license.getLicenseId())).withRel("deleteLicense")
+		Order order = orderService.getOrder(orderId, organizationId);
+		order.add( 
+				linkTo(methodOn(OrderController.class).getOrder(organizationId, order.getOrderId())).withSelfRel(),
+				linkTo(methodOn(OrderController.class).createOrder(order)).withRel("createOrder"),
+				linkTo(methodOn(OrderController.class).updateOrder(order)).withRel("updateOrder"),
+				linkTo(methodOn(OrderController.class).deleteOrder(order.getOrderId())).withRel("deleteOrder")
 		);
 		
-		return ResponseEntity.ok(license);
+		return ResponseEntity.ok(order);
 	}
 
 	@PutMapping
-	public ResponseEntity<License> updateLicense(@RequestBody License request) {
-		return ResponseEntity.ok(licenseService.updateLicense(request));
+	public ResponseEntity<Order> updateOrder(@RequestBody Order request) {
+		return ResponseEntity.ok(orderService.updateOrder(request));
 	}
 	
 	@PostMapping
-	public ResponseEntity<License> createLicense(@RequestBody License request) {
-		return ResponseEntity.ok(licenseService.createLicense(request));
+	public ResponseEntity<Order> createOrder(@RequestBody Order request) {
+		return ResponseEntity.ok(orderService.createOrder(request));
 	}
 
-	@DeleteMapping(value="/{licenseId}")
-	public ResponseEntity<String> deleteLicense(@PathVariable("licenseId") String licenseId) {
-		return ResponseEntity.ok(licenseService.deleteLicense(licenseId));
+	@DeleteMapping(value="/{orderId}")
+	public ResponseEntity<String> deleteOrder(@PathVariable("orderId") String orderId) {
+		return ResponseEntity.ok(orderService.deleteOrder(orderId));
 	}
 }

@@ -1,4 +1,4 @@
-package com.samazon.license.controller;
+package com.samazon.product.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -14,43 +14,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.samazon.license.model.License;
-import com.samazon.license.service.LicenseService;
+import com.samazon.product.model.Product;
+import com.samazon.product.service.ProductService;
 
 @RestController
-@RequestMapping(value="v1/organization/{organizationId}/license")
-public class LicenseController {
+@RequestMapping(value="v1/organization/{organizationId}/product")
+public class ProductController {
 
 	@Autowired
-	private LicenseService licenseService;
+	private ProductService productService;
 
-	@RequestMapping(value="/{licenseId}",method = RequestMethod.GET)
-	public ResponseEntity<License> getLicense( @PathVariable("organizationId") String organizationId,
-			@PathVariable("licenseId") String licenseId) {
+	@RequestMapping(value="/{productId}",method = RequestMethod.GET)
+	public ResponseEntity<Product> getProduct( @PathVariable("organizationId") String organizationId,
+			@PathVariable("productId") String productId) {
 		
-		License license = licenseService.getLicense(licenseId, organizationId);
-		license.add( 
-				linkTo(methodOn(LicenseController.class).getLicense(organizationId, license.getLicenseId())).withSelfRel(),
-				linkTo(methodOn(LicenseController.class).createLicense(license)).withRel("createLicense"),
-				linkTo(methodOn(LicenseController.class).updateLicense(license)).withRel("updateLicense"),
-				linkTo(methodOn(LicenseController.class).deleteLicense(license.getLicenseId())).withRel("deleteLicense")
+		Product product = productService.getProduct(productId, organizationId);
+		product.add( 
+				linkTo(methodOn(ProductController.class).getProduct(organizationId, product.getProductId())).withSelfRel(),
+				linkTo(methodOn(ProductController.class).createProduct(product)).withRel("createProduct"),
+				linkTo(methodOn(ProductController.class).updateProduct(product)).withRel("updateProduct"),
+				linkTo(methodOn(ProductController.class).deleteProduct(product.getProductId())).withRel("deleteProduct")
 		);
 		
-		return ResponseEntity.ok(license);
+		return ResponseEntity.ok(product);
 	}
 
 	@PutMapping
-	public ResponseEntity<License> updateLicense(@RequestBody License request) {
-		return ResponseEntity.ok(licenseService.updateLicense(request));
+	public ResponseEntity<Product> updateProduct(@RequestBody Product request) {
+		return ResponseEntity.ok(productService.updateProduct(request));
 	}
 	
 	@PostMapping
-	public ResponseEntity<License> createLicense(@RequestBody License request) {
-		return ResponseEntity.ok(licenseService.createLicense(request));
+	public ResponseEntity<Product> createProduct(@RequestBody Product request) {
+		return ResponseEntity.ok(productService.createProduct(request));
 	}
 
-	@DeleteMapping(value="/{licenseId}")
-	public ResponseEntity<String> deleteLicense(@PathVariable("licenseId") String licenseId) {
-		return ResponseEntity.ok(licenseService.deleteLicense(licenseId));
+	@DeleteMapping(value="/{productId}")
+	public ResponseEntity<String> deleteProduct(@PathVariable("productId") String productId) {
+		return ResponseEntity.ok(productService.deleteProduct(productId));
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.samazon.license.controller;
+package com.samazon.order.controller;
 
 import static java.util.Collections.singletonMap;
 
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.samazon.license.model.utils.ErrorMessage;
-import com.samazon.license.model.utils.ResponseWrapper;
-import com.samazon.license.model.utils.RestErrorList;
+import com.samazon.order.model.utils.ErrorMessage;
+import com.samazon.order.model.utils.ResponseWrapper;
+import com.samazon.order.model.utils.RestErrorList;
 
 /**
  *
