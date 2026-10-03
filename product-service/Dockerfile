@@ -1,31 +1,19 @@
-#stage 1
-#Start with a base image containing Java runtime
-FROM eclipse-temurin:17-jdk-alpine as build
+# build the jar
+FROM maven:3.8-eclipse-temurin-11 AS mvn
+WORKDIR /src
+COPY pom.xml .
+COPY src ./src
+RUN mvn -q package -DskipTests
 
-# Add Maintainer Info
-LABEL maintainer="Illary Huaylupo <illaryhs@gmail.com>"
-
-# The application's jar file
-ARG JAR_FILE
-
-# Add the application's jar to the container
-COPY ${JAR_FILE} app.jar
-
-#unpackage jar file
+FROM eclipse-temurin:17-jdk-alpine AS build
+LABEL maintainer="Samuel Moreno <samuelmc@arizona.edu>"
+COPY --from=mvn /src/target/*.jar app.jar
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
 
-#stage 2
-#Same Java runtime
 FROM eclipse-temurin:17-jdk-alpine
-
-#Add volume pointing to /tmp
 VOLUME /tmp
-
-#Copy unpackaged application to new container
 ARG DEPENDENCY=/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-
-#execute the application
 ENTRYPOINT ["java","-cp","app:app/lib/*","com.samazon.product.ProductServiceApplication"]
