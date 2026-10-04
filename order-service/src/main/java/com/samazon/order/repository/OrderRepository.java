@@ -1,14 +1,8 @@
 package com.samazon.order.repository;
 
-import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
 import com.samazon.order.model.Order;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface OrderRepository extends CrudRepository<Order,String>  {
-    public List<Order> findByOrganizationId(String organizationId);
-    public Order findByOrganizationIdAndOrderId(String organizationId,String orderId);
+// keeping format w product service w the Jpa repository
+public interface OrderRepository extends JpaRepository<Order, Long> {
 }

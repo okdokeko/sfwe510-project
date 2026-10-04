@@ -1,56 +1,48 @@
 package com.samazon.order.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.samazon.order.model.Order;
+import com.samazon.order.service.OrderService;
+import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.samazon.order.model.Order;
-import com.samazon.order.service.OrderService;
-
 @RestController
-@RequestMapping(value="v1/organization/{organizationId}/order")
+@RequestMapping("/samazon/orders")
 public class OrderController {
+    private final OrderService service;
 
-	@Autowired
-	private OrderService orderService;
+    public OrderController(OrderService service) {
+        this.service = service;
+    }
 
-	@RequestMapping(value="/{orderId}",method = RequestMethod.GET)
-	public ResponseEntity<Order> getOrder( @PathVariable("organizationId") String organizationId,
-			@PathVariable("orderId") String orderId) {
-		
-		Order order = orderService.getOrder(orderId, organizationId);
-		order.add( 
-				linkTo(methodOn(OrderController.class).getOrder(organizationId, order.getOrderId())).withSelfRel(),
-				linkTo(methodOn(OrderController.class).createOrder(order)).withRel("createOrder"),
-				linkTo(methodOn(OrderController.class).updateOrder(order)).withRel("updateOrder"),
-				linkTo(methodOn(OrderController.class).deleteOrder(order.getOrderId())).withRel("deleteOrder")
-		);
-		
-		return ResponseEntity.ok(order);
-	}
+    @GetMapping
+    public List<Order> findAll() {
+        return service.getAllOrders();
+    }
 
-	@PutMapping
-	public ResponseEntity<Order> updateOrder(@RequestBody Order request) {
-		return ResponseEntity.ok(orderService.updateOrder(request));
-	}
-	
-	@PostMapping
-	public ResponseEntity<Order> createOrder(@RequestBody Order request) {
-		return ResponseEntity.ok(orderService.createOrder(request));
-	}
+    @GetMapping(value = "/{id}")
+    public Order findById(@PathVariable Long id) {
+        return service.getById(id);
+    }
 
-	@DeleteMapping(value="/{orderId}")
-	public ResponseEntity<String> deleteOrder(@PathVariable("orderId") String orderId) {
-		return ResponseEntity.ok(orderService.deleteOrder(orderId));
-	}
+    @PostMapping
+    public Order create(@RequestBody Order order) {
+        return service.create(order);
+    }
+
+    @PutMapping(value = "/{id}")
+    public Order update(@PathVariable Long id, @RequestBody Order order) {
+        return service.update(id, order);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
 }

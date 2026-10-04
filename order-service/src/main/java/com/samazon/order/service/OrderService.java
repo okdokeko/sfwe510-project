@@ -1,56 +1,81 @@
 package com.samazon.order.service;
 
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
-
-import com.samazon.order.config.ServiceConfig;
 import com.samazon.order.model.Order;
+import com.samazon.order.model.OrderItem;
+import com.samazon.order.model.OrderStatus;
 import com.samazon.order.repository.OrderRepository;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class OrderService {
+    private final OrderRepository repository;
 
-	@Autowired
-	MessageSource messages;
+    public OrderService(OrderRepository repository) {
+        this.repository = repository;
+    }
 
-	@Autowired
-	private OrderRepository orderRepository;
+    public List<Order> getAllOrders() {
+        return repository.findAll();
+    }
 
-	@Autowired
-	ServiceConfig config;
+    public Order getById(Long id) {
+        Optional<Order> order = repository.findById(id);
+        if (order.isPresent()) {
+            return order.get();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order with ID not found: " + id);
+        }
+    }
 
+	// create order, set defaults in case of nulls
+    public Order create(Order order) {
+        order.setOrderId(null);
+        order.setDate(LocalDateTime.now());
+        if (order.getStatus() == null) {
+            order.setStatus(OrderStatus.PENDING);
+        }
+        for (OrderItem item : order.getItems()) {
+            item.setItemId(null);
+            item.setOrderId(order);
+        }
+        order.setTotalPrice(calculateTotal(order));
+        return repository.save(order);
+    }
 
-	public Order getOrder(String orderId, String organizationId){
-		Order order = orderRepository.findByOrganizationIdAndOrderId(organizationId, orderId);
-		if (null == order) {
-			throw new IllegalArgumentException(String.format(messages.getMessage("order.search.error.message", null, null),orderId, organizationId));	
-		}
-		return order.withComment(config.getProperty());
-	}
+    public Order update(Long id, Order updated) {
+        Order existingOrder = getById(id);
+        existingOrder.setCustomerId(updated.getCustomerId());
+        // status update is optional
+		if (updated.getStatus() != null) {
+            existingOrder.setStatus(updated.getStatus());
+        }
+        existingOrder.getItems().clear();
+        for (OrderItem item : updated.getItems()) {
+            item.setItemId(null);
+            item.setOrderId(existingOrder);
+            existingOrder.getItems().add(item); // add item to list
+        }
+		// recalculate the total
+        existingOrder.setTotalPrice(calculateTotal(existingOrder));
+        return repository.save(existingOrder);
+    }
 
-	public Order createOrder(Order order){
-		order.setOrderId(UUID.randomUUID().toString());
-		orderRepository.save(order);
+    public void delete(Long id) {
+        repository.delete(getById(id));
+    }
 
-		return order.withComment(config.getProperty());
-	}
-
-	public Order updateOrder(Order order){
-		orderRepository.save(order);
-
-		return order.withComment(config.getProperty());
-	}
-
-	public String deleteOrder(String orderId){
-		String responseMessage = null;
-		Order order = new Order();
-		order.setOrderId(orderId);
-		orderRepository.delete(order);
-		responseMessage = String.format(messages.getMessage("order.delete.message", null, null),orderId);
-		return responseMessage;
-
-	}
+	// small helper function to get the total price 
+    private BigDecimal calculateTotal(Order order) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderItem item : order.getItems()) {
+            total = total.add(item.getSnapshotPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+        return total;
+    }
 }
