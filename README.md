@@ -39,6 +39,11 @@ Get logs;
 docker compose logs -f productservice
 ```
 
+To check profile (from products service for example):
+```bash
+curl -s localhost:8088/actuator/env | grep -o '"activeProfiles":\[[^]]*\]'
+```
+
 # Spec
 ## Ports
 * 8089 - Config Server
