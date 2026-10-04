@@ -18,6 +18,10 @@ Run in the dev profile:
 $ docker compose up --build
 ```
 
+For logs
+```bash
+docker compose logs -f productservice orderservice
+```
 Run in prod profile:
 ```bash
 $ PROFILE=prod docker compose up --build
