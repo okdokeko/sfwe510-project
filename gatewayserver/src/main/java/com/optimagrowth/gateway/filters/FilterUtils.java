@@ -1,4 +1,4 @@
-package com.optimagrowth.gateway.filters;
+package com.samazon.gateway.filters;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.optimagrowth.gateway;
+package com.samazon.gateway;
 
 import org.junit.jupiter.api.Disabled;
 import org.springframework.boot.test.context.SpringBootTest;

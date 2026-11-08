@@ -1,4 +1,4 @@
-package com.optimagrowth.gateway.filters;
+package com.samazon.gateway.filters;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;

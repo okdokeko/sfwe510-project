@@ -1,4 +1,4 @@
-package com.optimagrowth.gateway.filters;
+package com.samazon.gateway.filters;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

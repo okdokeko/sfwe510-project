@@ -5,12 +5,12 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn -q package -DskipTests
 
-FROM eclipse-temurin:17-jdk-alpine AS build
+FROM eclipse-temurin:11-jdk-alpine AS build
 LABEL maintainer="Samuel Moreno <samuelmc@arizona.edu>"
 COPY --from=mvn /src/target/*.jar app.jar
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
 
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:11-jdk-alpine
 VOLUME /tmp
 ARG DEPENDENCY=/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib

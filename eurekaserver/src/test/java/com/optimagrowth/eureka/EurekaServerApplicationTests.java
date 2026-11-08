@@ -1,4 +1,4 @@
-package com.optimagrowth.eureka;
+package com.samazon.eureka;
 
 import org.junit.jupiter.api.Disabled;
 import org.springframework.boot.test.context.SpringBootTest;

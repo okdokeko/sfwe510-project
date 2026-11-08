@@ -9,5 +9,5 @@ logging:
   level:
     com.netflix: WARN
     org.springframework.web: WARN
-    com.optimagrowth: DEBUG
+    com.samazon: DEBUG
             
