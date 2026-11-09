@@ -25,6 +25,8 @@
     <module>configserver</module>
     <module>product-service</module>
     <module>order-service</module>
+    <module>eurekaserver</module>
+    <module>gatewayserver</module>
   </modules>
   
   <build>
