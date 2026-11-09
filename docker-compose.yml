@@ -121,6 +121,28 @@ services:
       backend:
         aliases:
           - "gatewayserver"
+  keycloak:
+    image: quay.io/keycloak/keycloak:16.1.1
+    command: ["-b", "0.0.0.0", "-Dkeycloak.import=/opt/jboss/keycloak/realm-export.json"]
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    volumes:
+      - ./keycloak/realm-export.json:/opt/jboss/keycloak/realm-export.json
+    ports:
+      - "8080:8080"
+    networks:
+      backend:
+        aliases:
+          - "keycloak"
+  mailpit: # found this quick SMTP serverfor the email/pswd reminder: https://mailpit.axllent.org/
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+    networks:
+      backend:
+        aliases:
+          - "mailpit"
 
 networks:
   backend:
