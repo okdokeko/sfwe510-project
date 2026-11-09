@@ -35,7 +35,7 @@ public class OrderController {
     }
 
     @PostMapping
-    @RolesAllowed("ADMIN")
+    @RolesAllowed({"ADMIN","USER"})
     public Order create(@RequestBody Order order) {
         return service.create(order);
     }

@@ -3,7 +3,9 @@ package com.samazon.order.service;
 import com.samazon.order.model.Order;
 import com.samazon.order.model.OrderItem;
 import com.samazon.order.model.OrderStatus;
+import com.samazon.order.model.ProductDto;
 import com.samazon.order.repository.OrderRepository;
+import com.samazon.order.service.ProductClient;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,9 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class OrderService {
     private final OrderRepository repository;
+    private final ProductClient productClient; // Add the actual integration
 
-    public OrderService(OrderRepository repository) {
+    public OrderService(OrderRepository repository, ProductClient productClient) {
         this.repository = repository;
+        this.productClient = productClient;
     }
 
     public List<Order> getAllOrders() {
@@ -43,6 +47,12 @@ public class OrderService {
         for (OrderItem item : order.getItems()) {
             item.setItemId(null);
             item.setOrderId(order);
+            ProductDto product = productClient.getProduct(item.getProductId());
+            if (product.getStock() == null || product.getStock() < item.getQuantity()) {
+                throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, // secret easter egg :)
+                        "Out of stock; Product: " + item.getProductId());
+            }
+            item.setSnapshotPrice(product.getCurrentPrice());
         }
         order.setTotalPrice(calculateTotal(order));
         return repository.save(order);
